@@ -41,6 +41,7 @@ int main()
 
 
 	Shader shaderProgram("shaders/shader.vs", "shaders/shader.fs");
+	Shader vnShaderProgram("shaders/shader.vs", "shaders/vapeShader.fs");
 
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
@@ -54,6 +55,14 @@ int main()
 		0, 1, 3,  // first Triangle
 		1, 2, 3   // second Triangle
 	};
+	float otherVertices[] = {
+		//not useful // positions
+		0.0f, 0.0f, 0.0f, 0.0f, 0.75f, 0.75f, 0.0f, // top right
+		0.0f, 0.0f, 0.0f, 0.0f, 0.75f, -0.25f, 0.0f, // bottom right
+		0.0f, 0.0f, 0.0f, 0.0f, -0.25f, -0.25f, 0.0f, // bottom left
+		0.0f, 0.0f, 0.0f, 0.0f, -0.25f, 0.75f, 0.0f // top left
+	};
+
 	unsigned int VBO, VAO, EBO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -66,6 +75,7 @@ int main()
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -80,6 +90,34 @@ int main()
 	// VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
 	glBindVertexArray(0);
 
+	unsigned int vVBO, vVAO, vEBO;
+	glGenVertexArrays(1, &vVAO);
+	glGenBuffers(1, &vVBO);
+	glGenBuffers(1, &vEBO);
+	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+	glBindVertexArray(vVAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(otherVertices), otherVertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vEBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	// You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
+	// VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
+	glBindVertexArray(0);
+
+	
 
 	// uncomment this call to draw in wireframe polygons.
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -90,13 +128,13 @@ int main()
 		Update(window);
 		// render loop
 		// -----------
-		Render(window, shaderProgram, VAO);
+		Render(window, shaderProgram,vnShaderProgram, VAO,vVAO);
 	}
-	// optional: de-allocate all resources once they've outlived their purpose:
-	// ------------------------------------------------------------------------
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	//glDeleteBuffers(1, &EBO);
+	//cleanup unbinding
+	// ----------------
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	// glfw: terminate, clearing all previously allocated GLFW resources.
 	// ------------------------------------------------------------------
@@ -104,30 +142,36 @@ int main()
 	return 0;
 }
 
-void Render(_Notnull_ GLFWwindow* window, _Notnull_ Shader shaderProgram, _Notnull_ unsigned int VAO) {
+void Render(_Notnull_ GLFWwindow* window, _Notnull_ Shader shaderProgram,_Notnull_ Shader vnShader, _Notnull_ unsigned int VAO,unsigned int vVAO) {
 	// render
 	// ------
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	// render the triangle
+	//use shader helper
+	// ----------------
 	shaderProgram.use();
-	glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-		//glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(VAO); 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	// glBindVertexArray(0); // no need to unbind it every time 
 
+	
 
-	// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-	// -------------------------------------------------------------------------------
+	vnShader.use(); 
+	glBindVertexArray(vVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+	//glBindVertexArray(0);
+	// glfw: swap buffers
+	// ------------------
 	glfwSwapBuffers(window);
 }
 
 void Update(_Notnull_ GLFWwindow* window) {
 	//do game logic here
 	// input
-		// -----
+	// -----
 	processInput(window);
+	//glfw: poll IO events(keys pressed / released, mouse moved etc.)
+	// --------------------------------------------------------------
 	glfwPollEvents();
 
 }
