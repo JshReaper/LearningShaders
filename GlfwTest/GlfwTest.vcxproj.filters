@@ -18,10 +18,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
+    <ClCompile Include="stb_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,6 +41,24 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="shaders\shader.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\3.3.shader.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\3.3.shader.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\mymat.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\vapeShader.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\5.1.transform.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\5.1.transform.vs">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
