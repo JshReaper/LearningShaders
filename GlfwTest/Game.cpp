@@ -104,7 +104,7 @@ int main()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(4 * sizeof(float)));
 	glEnableVertexAttribArray(0);
 
 	// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
@@ -148,17 +148,25 @@ void Render(_Notnull_ GLFWwindow* window, _Notnull_ Shader shaderProgram,_Notnul
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
+
+	// calculate value of uniform variable
+	float timeValue = glfwGetTime();
+	float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+	// get location of uniform variable
+	
 	//use shader helper
 	// ----------------
 	shaderProgram.use();
+	// set uniform variable on current shader program
 	glBindVertexArray(VAO); 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	
 
-	vnShader.use(); 
+	vnShader.use();
+	vnShader.setFloat("ourColor", greenValue);
 	glBindVertexArray(vVAO);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	//glBindVertexArray(0);
 	// glfw: swap buffers
 	// ------------------

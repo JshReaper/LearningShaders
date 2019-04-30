@@ -88,7 +88,7 @@ public:
 	// ------------------------------------------------------------------------
 	void setFloat(const std::string& name, float value) const
 	{
-		glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
+		glUniform4f(glGetUniformLocation(ID, name.c_str()),0.0f, value,0.0f,1.0f);
 	}
 
 private:
