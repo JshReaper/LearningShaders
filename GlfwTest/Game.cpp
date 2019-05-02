@@ -180,24 +180,48 @@ int main()
 		// activate shader
 		ourShader.use();
 
-		
-		ourShader.setVec3("pointLight.position", lightPos);
+
 		ourShader.setVec3("viewPos", camera.Position);
+
 		glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
 		lightColor.x = sin(glfwGetTime() * 2.0f);
 		lightColor.y = sin(glfwGetTime() * 0.7f);
 		lightColor.z = sin(glfwGetTime() * 1.3f);
 		glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f); // decrease the influence
 		glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
-		ourShader.setVec3("pointLight.ambient", ambientColor);
-		ourShader.setVec3("pointLight.diffuse", diffuseColor);
-		ourShader.setVec3("pointLight.specular", 1.0f, 1.0f, 1.0f);
+
+		//point light
+		// ---------
+		ourShader.setVec3("pointLights[0].position", lightPos);
+		ourShader.setVec3("pointLights[0].ambient", ambientColor);
+		ourShader.setVec3("pointLights[0].diffuse", diffuseColor);
+		ourShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+		ourShader.setFloat("pointLights[0].constant", 1.0f);
+		ourShader.setFloat("pointLights[0].linear", 0.14f);
+		ourShader.setFloat("pointLights[0].quadratic", 0.07f);
+
+		//directional light 
+		ourShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+		ourShader.setVec3("dirLight.ambient", ambientColor);
+		ourShader.setVec3("dirLight.diffuse", diffuseColor);
+		ourShader.setVec3("dirLight.specular", 1.0f, 1.0f, 1.0f);
+
+		//spot light
+		ourShader.setVec3("spotLight.position", camera.Position);
+		ourShader.setVec3("spotLight.direction", camera.Front);
+		ourShader.setVec3("spotLight.ambient", ambientColor);
+		ourShader.setVec3("spotLight.diffuse", diffuseColor);
+		ourShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+		ourShader.setFloat("spotLight.constant", 1.0f);
+		ourShader.setFloat("spotLight.linear", 0.09);
+		ourShader.setFloat("spotLight.quadratic", 0.032);
+		ourShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+		ourShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 
 
-		ourShader.setFloat("pointLight.constant", 1.0f);
-		ourShader.setFloat("pointLight.linear", 0.14f);
-		ourShader.setFloat("pointLight.quadratic", 0.07f);
 
+		//material
+		// -------
 		ourShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
 		ourShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
 		ourShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
