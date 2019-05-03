@@ -43,22 +43,13 @@
     <None Include="shaders\shader.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\3.3.shader.fs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="shaders\3.3.shader.vs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="shaders\mymat.fs">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="shaders\vapeShader.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\5.1.transform.fs">
+    <None Include="shaders\lightShader.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\5.1.transform.vs">
+    <None Include="shaders\lightShader.vs">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
