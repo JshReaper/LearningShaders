@@ -181,6 +181,7 @@ int main()
 	// -----------------------------------------------------------------------------
 	unsigned int diffuseMap = loadTexture("resources/textures/container2.png");
 	unsigned int specularMap = loadTexture("resources/textures/container2_specular.png");
+	unsigned int emissionMap = loadTexture("resources/textures/matrix.jpg");
 
 	glm::vec3 lightPos(2.2f, 1.0f, 2.0f);
 	// render loop
@@ -220,6 +221,7 @@ int main()
 		ourShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
 		ourShader.setVec3("dirLight.ambient", ambientColor);
 		ourShader.setVec3("dirLight.diffuse", diffuseColor);
+
 		ourShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 		// point light 1
 		ourShader.setVec3("pointLights[0].position", pointLightPositions[0]);
@@ -289,6 +291,12 @@ int main()
 		// bind specular map
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, specularMap);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, emissionMap);
+		ourShader.setInt("material.diffuse", 0); // or with shader class
+
+		ourShader.setInt("material.specular", 1); // or with shader class
+		ourShader.setInt("material.emission", 2); // or with shader class
 
 		// render containers
 		glBindVertexArray(cubeVAO);
